@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelCravings | Add New Listing</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/new.css">
+
+</head>
+<body>
+    <h1>Add a New Listing 🗺️</h1>
+
+    <form method="POST" action="/listings" novalidate class="needs-validation">
+
+        <div class="form-group">
+            <input name="listing[title]" placeholder="Enter title (e.g., Cozy Beach House)" type="text" required>
+        </div>
+
+        <div class="form-group">
+            <textarea name="listing[description]" placeholder="Describe the listing in detail..." rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <input name="listing[image][url]" placeholder="Enter image URL" type="text">
+        </div>
+
+        <div class="form-group">
+            <input name="listing[price]" placeholder="Enter price (e.g., 120.50)" type="number" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <input name="listing[location]" placeholder="Enter location (e.g., Bali)" type="text" required>
+        </div>
+
+        <div class="form-group">
+            <input name="listing[country]" placeholder="Enter country (e.g., Indonesia)" type="text" required>
+        </div>
+
+        <button type="submit">Add Listing</button>
+    </form>
+</body>
+</html>

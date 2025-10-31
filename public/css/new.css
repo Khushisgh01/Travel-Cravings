@@ -1,0 +1,126 @@
+/* --- Color Palette and Variables (Enhanced) --- */
+:root {
+    /* Primary Colors (Vibrant Travel Theme) */
+    --primary-red: #FF385C;    /* Key Brand Color - Strong, welcoming red */
+    --secondary-teal: #008489;  /* Deep Teal - Contrast for buttons/focus */
+    --accent-yellow: #FFC043;  /* Bright Accent - Used sparingly for highlight */
+
+    /* Neutrals and Backgrounds */
+    --bg-light: #F8F9FA;       /* Very light grey background */
+    --form-bg: #FFFFFF;        /* Crisp white form background */
+    --text-dark: #333333;      /* Dark grey for readability */
+    --border-soft: #E0E0E0;    /* Very subtle border color */
+    
+    /* Shadows and Effects */
+    --shadow-main: 0 10px 30px rgba(0, 0, 0, 0.08); /* Stronger, softer shadow */
+}
+
+/* --- Global and Typography --- */
+body {
+    font-family: 'Poppins', sans-serif; /* Using a modern, friendly font (Note: you need to link this font in your EJS file's <head> to display it correctly!) */
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Ensure it takes full viewport height for centering */
+    margin: 0;
+    padding: 40px 20px;
+}
+
+h1 {
+    color: var(--primary-red);
+    margin-bottom: 40px;
+    font-size: 3em;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.5px;
+    animation: fadeIn 1s ease-out; /* Subtle animation on load */
+}
+
+/* --- Form Container Styling --- */
+form {
+    background-color: var(--form-bg);
+    padding: 50px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-main);
+    width: 100%;
+    max-width: 550px; /* Slightly wider form */
+    box-sizing: border-box;
+    transition: transform 0.3s ease-in-out;
+}
+
+form:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+}
+
+/* Grouping inputs with labels for better accessibility and structure */
+.form-group {
+    margin-bottom: 25px;
+}
+
+/* --- Input and Textarea Styling (Sleek and Modern) --- */
+input:not([type="submit"]),
+textarea {
+    width: 100%;
+    padding: 14px 18px; /* More internal padding */
+    border: 2px solid var(--border-soft);
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 1.05em;
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #A9A9A9; /* Lighter placeholder text */
+    font-style: italic;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--secondary-teal); /* Teal border on focus */
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 132, 137, 0.15); /* Soft, colored focus ring */
+    background-color: #FAFAFA; /* Subtle background change on focus */
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* --- Button Styling (Vibrant and Interactive) --- */
+button[type="submit"] {
+    background-color: var(--primary-red);
+    color: white;
+    padding: 18px 25px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(255, 56, 92, 0.4); /* Colored shadow for pop */
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #E60032; /* Slightly darker primary color on hover */
+    box-shadow: 0 6px 20px rgba(255, 56, 92, 0.6);
+    transform: translateY(-2px);
+}
+
+button[type="submit"]:active {
+    transform: translateY(1px);
+}
+
+/* --- Optional: Animation Keyframes --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
