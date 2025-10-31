@@ -1,0 +1,74 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    /* Custom CSS for a bit more personality */
+    .error-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding-top: 5vh;
+    }
+    .error-icon {
+        font-size: 8rem;
+        color: #ffc107; /* Bootstrap yellow for warning/travel theme */
+        margin-bottom: 20px;
+        animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+
+    @keyframes shake {
+        10%, 90% {
+            transform: translate3d(-1px, 0, 0);
+        }
+        20%, 80% {
+            transform: translate3d(2px, 0, 0);
+        }
+        30%, 50%, 70% {
+            transform: translate3d(-4px, 0, 0);
+        }
+        40%, 60% {
+            transform: translate3d(4px, 0, 0);
+        }
+    }
+</style>
+
+<div class="error-container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Travel-themed Emoji Icon for a cute touch -->
+            <div class="error-icon">
+                🧭
+            </div>
+            
+            <h1 class="display-4 text-danger">Oops! Lost on the Trail...</h1>
+            <p class="lead">
+                It looks like the path to this destination is currently under construction, 
+                or maybe our GPS needs an update.
+            </p>
+            
+            <!-- Dynamic Error Message -->
+            <div class="alert alert-warning border-warning mt-4 p-3 d-inline-block shadow-sm">
+                <p class="mb-1"><strong>Error Status: <%= statusCode %></strong></p>
+                <h4 class="alert-heading text-dark"><%= message %></h4>
+                
+                <% if (process.env.NODE_ENV !== "production") { %>
+                    <hr>
+                    <!-- Display Stack Trace in development mode -->
+                    <p class="mb-0 text-muted" style="font-size: 0.8rem; text-align: left;">
+                        <pre style="white-space: pre-wrap; word-wrap: break-word;"><%= stack %></pre>
+                    </p>
+                <% } %>
+            </div>
+            
+            <div class="mt-4">
+                <a href="/listings" class="btn btn-primary btn-lg">
+                    <i class="fas fa-undo"></i> Go Back to all Listings
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
