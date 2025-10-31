@@ -8,6 +8,7 @@ const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 const wrapAsync=require("./utils/wrapAsync.js");
 const ExpressError=require("./utils/ExpressError.js");
+const {listingSchema}=require("./schema.js");
 
 main().then(()=>{
     console.log("connected to DB")
@@ -30,6 +31,18 @@ app.get("/",(req,res)=>{
     res.send("HI, I am root");
 });
 
+const validateListing=(req,res,next)=>{
+    //this below line checks kya req ki body inn saari cindition ko satisfy krti hai hai ki nhi
+    let {error}=listingSchema.validate(req.body);
+    //If result ke andr error exist krta hai toh hum error throw krdenge
+    if(error){
+        let errMsg=error.details.map((el)=>el.message).join(",");
+        throw new ExpressError(400,errMsg);
+    }else{
+        next();
+    }
+}
+
 //Index route
 app.get("/listings", wrapAsync(async (req, res) => {
     const allListings = await Listing.find({});
@@ -50,10 +63,11 @@ app.get("/listings/:id", wrapAsync(async (req, res) => {
 
 //Create route
 //whenever we do changes in database tabhi hum async and await use krte hai
-app.post("/listings", wrapAsync(async (req, res, next) => {
-    if(!req.body.listing){
-        throw new ExpressError(400,"Send Valid data for listing")
-    }
+app.post("/listings", validateListing,wrapAsync(async (req, res, next) => {
+    // if(!req.body.listing){
+    //     throw new ExpressError(400,"Send Valid data for listing")
+    // }
+    
     //hum data nikal rhe hai form me jo fill kiya tha and then we will use that data to basically form a listing on the listings page
     let listing=req.body.listing;
     const newListing=new Listing(listing);
@@ -81,7 +95,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 }));
 
 //Update Route
-app.put("/listings/:id", wrapAsync(async (req, res) => {
+app.put("/listings/:id",validateListing, wrapAsync(async (req, res) => {
     if(!req.body.listing){
         throw new ExpressError(400,"Send Valid data for listing")
     }
