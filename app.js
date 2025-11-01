@@ -9,6 +9,7 @@ const ejsMate=require("ejs-mate");
 const wrapAsync=require("./utils/wrapAsync.js");
 const ExpressError=require("./utils/ExpressError.js");
 const {listingSchema}=require("./schema.js");
+const Review= require('./models/review.js');
 
 main().then(()=>{
     console.log("connected to DB")
@@ -104,13 +105,40 @@ app.put("/listings/:id",validateListing, wrapAsync(async (req, res) => {
     res.redirect(`/listings/${id}`);
 }));
 
-//Delete route
+//Delete route - CORRECTED
 app.delete("/listings/:id", wrapAsync(async (req, res) => {
     const {id}=req.params;
+    // Find and delete the document. It returns the deleted document.
     let deletedListing=await Listing.findByIdAndDelete(id);
+
+    // START FIX: Check if the listing has an associated image and if it's NOT the default image.
+    if (deletedListing && deletedListing.image && deletedListing.image.filename && deletedListing.image.filename !== "default-listing-image") {
+        // This is where you would call your cloud storage API (e.g., Cloudinary) 
+        // to actually delete the file using the stored 'filename'.
+        // Example (requires Cloudinary setup):
+        // await cloudinary.uploader.destroy(deletedListing.image.filename); 
+        console.log(`Image with filename ${deletedListing.image.filename} successfully removed from DB entry. Add cloud storage deletion logic here.`);
+    }
+    // END FIX
+
     console.log(deletedListing);
     res.redirect("/listings");
 }));
+
+//Reviews
+//Post route
+app.post("/listings/:id/reviews",wrapAsync(async(req,res)=>{
+    let listing=await Listing.findById(req.params.id);
+    let newReview=new Review(req.body.review);
+
+    //now pushing this new review to reviews array created on the listing schema
+    listing.reviews.push(newReview);
+    await newReview.save();
+    await listing.save();
+
+    res.redirect(`/listings/${listing._id}`)
+}))
+
 
 //Page not found
 //agr upar kisike sath match uhua to execute hoga else ye execute hoga
