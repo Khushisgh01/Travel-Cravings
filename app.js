@@ -1,15 +1,11 @@
 const express=require("express");
 const app=express();
 const mongoose=require ("mongoose");
-const Listing = require('./models/listing.js');
 const path=require("path");
 const MONGO_URL="mongodb://127.0.0.1:27017/travelCravings";
 const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
-const wrapAsync=require("./utils/wrapAsync.js");
 const ExpressError=require("./utils/ExpressError.js");
-const {listingSchema,reviewSchema}=require("./schema.js");
-const Review= require('./models/review.js');
 
 const listings=require("./routes/listing.js");
 const reviews=require("./routes/review.js");

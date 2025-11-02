@@ -4,7 +4,7 @@ const wrapAsync=require("../utils/wrapAsync.js");
 const ExpressError=require("../utils/ExpressError.js");
 const Listing = require('../models/listing.js');
 
-const {listingSchema,reviewSchema}=require("../schema.js");
+const {listingSchema}=require("../schema.js");
 
 const validateListing=(req,res,next)=>{
     //this below line checks kya req ki body inn saari cindition ko satisfy krti hai hai ki nhi
