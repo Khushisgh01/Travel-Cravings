@@ -78,7 +78,7 @@ body{
     opacity:0;
 }
 
-.card-img-overlay :hover{
+.card-img-overlay:hover{
     opacity: 0.2;
     background-color: white;
 }
@@ -100,4 +100,36 @@ body{
 .show-card{
     padding-left: 0;
     padding-right: 0;
+}
+
+/* New Rating Styles for visual display */
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating {
+    display: inline-block;
+    font-size: 1.5rem;
+    direction: rtl; /* Use RTL for easier star filling logic */
+}
+
+.star-rating label {
+    color: #ccc; /* Unfilled star color */
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.2s ease;
+}
+
+/* Color stars on hover and for selected rating */
+.star-rating input[type="radio"]:checked ~ label, 
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: gold; /* Filled star color */
+}
+
+/* To display solid stars for existing ratings (use in show.ejs to display the star) */
+.star-rating-display .fa-star {
+    color: gold;
+    font-weight: 900; 
+    direction: ltr; /* Ensure display is left-to-right */
 }

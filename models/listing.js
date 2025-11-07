@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const review = require("./review.js");
+const Review = require("./review.js");
 const Schema = mongoose.Schema;
 
 const listingSchema = new Schema({
@@ -9,17 +9,14 @@ const listingSchema = new Schema({
   },
   description: String,
   image: {
-    // 1. Change the top level to an Object type
     type: { 
-        url: String, // Nested field 1 for the URL
-        filename: String // Nested field 2 for the filename
+        url: String, 
+        filename: String 
     },
-    // 2. Add a default value structure
     default: { 
         url: "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGdvYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-        filename: "default-listing-image" // Add a default filename as well
+        filename: "default-listing-image"
     },
-    // 3. Update the setter function (v will now be the entire image object)
     set: (v) => 
         (v && v.url === "") 
             ? { 
@@ -37,9 +34,13 @@ const listingSchema = new Schema({
       ref:"Review",
     },
   ],
+  owner: { // NEW: Link to the User model
+      type: Schema.Types.ObjectId,
+      ref: "User",
+  }
 });
 
-//we are making post mongoose middleware so that after deletinga listing the reviews associated to it also gets deleted
+// Post Mongoose middleware to delete associated reviews after a listing is deleted
 listingSchema.post("findOneAndDelete",async(listing)=>{
   if(listing) {
   await Review.deleteMany({_id:{$in:listing.reviews}});
