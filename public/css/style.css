@@ -1,141 +1,285 @@
-body{
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --brand-color: #fe424d;
+    --brand-hover: #e0323d;
+    --text-dark: #222222;
+    --text-light: #717171;
+    --bg-light: #f7f7f7;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+    --shadow-md: 0 6px 16px rgba(0,0,0,0.12);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+body {
     font-family: "Plus Jakarta Sans", sans-serif !important;
+    background-color: var(--white);
+    color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-
-.navbar{
-    height:5rem;
-    background-color: white;
+/* --- Navbar Styling --- */
+.navbar {
+    height: 5rem;
+    background-color: var(--white);
+    border-bottom: 1px solid #ebebeb;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-.fa-compass{
-    color: #fe424d;
+.navbar-brand {
+    color: var(--brand-color) !important;
+    font-size: 2rem;
+    transition: transform 0.2s;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.1);
+}
+
+.fa-compass {
     font-size: 2rem;
 }
 
-.nav-link{
-    color: #222222 !important;
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: 2rem;
+    transition: all 0.3s ease;
 }
 
-/* Footer */
-.f-info-links a{
+.nav-link:hover {
+    background-color: #f7f7f7;
+    color: var(--brand-color) !important;
+}
+
+/* Search Bar Styles */
+.search-input {
+    border-radius: 25px !important;
+    padding: 0.5rem 1.5rem 0.5rem 1.5rem !important;
+    font-size: 0.9rem;
+    min-width: 250px;
+}
+
+.search-btn {
+    background-color: var(--brand-color) !important;
+    color: white !important;
+    border-radius: 25px !important;
+    padding: 0 1rem 0 1rem !important;
+}
+
+.search-btn:hover {
+    background-color: var(--brand-hover) !important;
+}
+
+.search-btn i {
+    display: inline;
+    margin-right: 0.5rem;
+}
+
+/* --- Footer Styling --- */
+footer {
+    margin-top: auto;
+}
+
+.f-info {
+    height: 8rem;
+    background-color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid #dddddd;
+    padding: 1rem 0;
+}
+
+.f-info-socials {
+    width: 100%;
+    font-size: 1.4rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.f-info-socials i {
+    color: var(--text-dark);
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.f-info-socials i:hover {
+    color: var(--brand-color);
+}
+
+.f-info-links a {
     text-decoration: none;
-    color:#222222
+    color: var(--text-dark);
+    font-weight: 500;
+    margin: 0 0.5rem;
 }
 
-.f-info-links a:hover{
+.f-info-links a:hover {
     text-decoration: underline;
 }
 
-.f-info-links , .f-info-socials, .f-info-brand{
-    width:100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.f-info-brand {
+    font-size: 0.9rem;
+    color: var(--text-light);
 }
 
-.f-info-socials i{
-    font-size:1.2rem;
-    margin-right: 1rem;
-}
-
-.f-info{
-    text-align: center;
-    height:8rem;
-    background-color: #ebebeb;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: space-evenly;
-}
-
-/* Cards */
-.listing-card{
-    border:none !important;
+/* --- Listing Cards (Index Page) --- */
+.listing-card {
+    border: none !important;
+    background: transparent;
     margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: var(--radius-lg);
 }
 
-.card-img-top{
-    border-radius: 1rem !important;
-    width:100% !important;
+.listing-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    border-radius: var(--radius-lg) !important;
+    width: 100% !important;
+    height: 20rem !important;
     object-fit: cover !important;
+    box-shadow: var(--shadow-sm);
+    transition: opacity 0.3s;
 }
 
-.card-body{
-    padding:0 !important;
+.listing-card:hover .card-img-top {
+    box-shadow: var(--shadow-md);
 }
 
-.card-text p{
-    font-weight: 400 !important;
+.card-body {
+    padding: 0.75rem 0.25rem !important;
 }
 
-.listing-link{
+.card-text {
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-dark);
+}
+
+.card-text b {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.listing-link {
     text-decoration: none;
+    color: inherit;
 }
 
-/* Card Effect */
-.card-img-overlay{
-    opacity:0;
+/* Card Hover Overlay Effect */
+.card-img-overlay {
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-lg);
+    transition: opacity 0.3s;
 }
 
-.card-img-overlay:hover{
-    opacity: 0.2;
-    background-color: white;
+.card-img-overlay:hover {
+    opacity: 1;
 }
 
-
-/* Show Page */
-.show-img{
-    height: 30vh;
+/* --- Show Page Styling --- */
+.show-img {
+    height: 45vh;
+    width: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
 }
 
-.btns{
-    display: flex;
+.show-card {
+    padding: 0;
+    border: none !important;
 }
 
-.edit-btn{
-    color: #fe424d;
+.show-card .card-text {
+    font-size: 1.1rem;
+    color: #444;
 }
 
-.show-card{
-    padding-left: 0;
-    padding-right: 0;
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    transition: all 0.2s;
 }
 
-/* New Rating Styles for visual display */
-.star-rating input[type="radio"] {
-    display: none;
+.btn-primary, .btn-dark {
+    background-color: var(--brand-color);
+    border: none;
 }
 
+.btn-primary:hover, .btn-dark:hover {
+    background-color: var(--brand-hover);
+    transform: scale(1.02);
+}
+
+.edit-btn {
+    background-color: var(--brand-color) !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Map Styling */
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
+    border: 1px solid #ddd;
+}
+
+/* --- Form Elements --- */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 0.8rem;
+}
+
+.form-control:focus {
+    border-color: var(--brand-color);
+    box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.25);
+}
+
+/* Rating Stars Enhancement */
 .star-rating {
     display: inline-block;
     font-size: 1.5rem;
-    direction: rtl; /* Use RTL for easier star filling logic */
+    direction: rtl; 
 }
-
+.star-rating input[type="radio"] {
+    display: none;
+}
 .star-rating label {
-    color: #ccc; /* Unfilled star color */
+    color: #ddd; 
     cursor: pointer;
-    padding: 0 5px;
+    padding: 0 2px;
     transition: color 0.2s ease;
 }
-
-/* Color stars on hover and for selected rating */
 .star-rating input[type="radio"]:checked ~ label, 
 .star-rating label:hover,
 .star-rating label:hover ~ label {
-    color: gold; /* Filled star color */
-}
-
-/* To display solid stars for existing ratings (use in show.ejs to display the star) */
-.star-rating-display .fa-star {
-    color: gold;
-    font-weight: 900; 
-    direction: ltr; /* Ensure display is left-to-right */
-}
-
-/* MAP */
-#map {
-    height:400px;
-    width:100vh;
+    color: #ffc107; /* Gold for stars */
 }

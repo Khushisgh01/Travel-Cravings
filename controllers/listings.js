@@ -5,7 +5,22 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 const { cloudinary } = require("../cloudinary");
 
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find({});
+    const { search } = req.query;
+    let allListings;
+    
+    if (search) {
+        // Search functionality: Filter by Title, Location, or Country (Case Insensitive)
+        allListings = await Listing.find({
+            $or: [
+                { title: { $regex: search, $options: "i" } },
+                { location: { $regex: search, $options: "i" } },
+                { country: { $regex: search, $options: "i" } }
+            ]
+        });
+    } else {
+        allListings = await Listing.find({});
+    }
+    
     res.render("listings/index.ejs", { allListings });
 };
 
@@ -28,7 +43,6 @@ module.exports.showListing = async (req, res) => {
 };
 
 module.exports.createListing = async (req, res, next) => {
-    // 1. Calculate Geometry using Mapbox
     let response = await geocodingClient.forwardGeocode({
         query: req.body.listing.location,
         limit: 1
@@ -65,13 +79,11 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateListing = async (req, res) => {
     const { id } = req.params;
     
-    // 1. Recalculate Geometry when updating (Fixes the wrong map location)
     let response = await geocodingClient.forwardGeocode({
         query: req.body.listing.location,
         limit: 1
     }).send();
     
-    // 2. Prepare update data with new geometry
     let updatedData = { 
         ...req.body.listing, 
         geometry: response.body.features[0].geometry 
