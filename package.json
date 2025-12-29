@@ -2,12 +2,14 @@
   "engines": {
     "node": "v22.20.0"
   },
+
   "name": "travel-cravings",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
