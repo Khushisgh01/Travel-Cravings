@@ -1,4 +1,9 @@
 const Listing = require("../models/listing");
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapToken= process.env.MAP_TOKEN;
+const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+
+
 const { cloudinary } = require("../cloudinary");
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
@@ -23,7 +28,13 @@ module.exports.showListing = async (req, res) => {
     res.render("listings/show.ejs", { listing });
 };
 
-module.exports.createListing = async (req, res) => {
+module.exports.createListing = async (req, res, next) => {
+    let response=await geocodingClient.forwardGeocode({
+    query: req.body.listing.location,
+    limit: 1
+    })
+    .send();
+
     // If Multer middleware fails, it will skip to error handler, so req.file should be present on success.
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
@@ -35,8 +46,9 @@ module.exports.createListing = async (req, res) => {
             filename: req.file.filename
         };
     }
-
-    await newListing.save();
+    newListing.geometry = response.body.features[0].geometry;
+    let savedListing=await newListing.save();
+    console.log(savedListing);
     req.flash("success", "New Listing Created! 🎉");
     res.redirect("/listings");
 };

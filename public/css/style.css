@@ -137,5 +137,5 @@ body{
 /* MAP */
 #map {
     height:400px;
-    width:100px;
+    width:100vh;
 }
