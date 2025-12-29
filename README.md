@@ -91,6 +91,4 @@ The server will run on port `8080`.
 
 ---
 
-## 📄 License
 
-This project is licensed under the **ISC License**.
