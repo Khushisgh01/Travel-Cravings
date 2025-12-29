@@ -1,4 +1,4 @@
-TravelCravings
+##TravelCravings
 TravelCravings is a full-stack web application designed to help travelers find and list unique accommodations worldwide. Built with the MERN stack (MongoDB, Express.js, and Node.js), it features a robust listing management system, user authentication, and interactive mapping.
 
 Live Project: https://travel-cravings-2.onrender.com/listings
