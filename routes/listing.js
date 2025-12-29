@@ -9,7 +9,7 @@ const { isLoggedIn, isOwner, validateListing } = require("../utils/middleware.js
 
 // Image Upload Setup: Import Multer and Cloudinary Config
 const multer = require('multer');
-const { storage, cloudinary } = require('../cloudinary'); // Correct import
+const { storage, cloudinary } = require('../cloudinary'); 
 const upload = multer({ storage }); 
 
 // -----------------------------------------------------------

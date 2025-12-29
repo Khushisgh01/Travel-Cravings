@@ -133,3 +133,9 @@ body{
     font-weight: 900; 
     direction: ltr; /* Ensure display is left-to-right */
 }
+
+/* MAP */
+#map {
+    height:400px;
+    width:100px;
+}
