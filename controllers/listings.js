@@ -1,5 +1,5 @@
 const Listing = require("../models/listing");
-
+const { cloudinary } = require("../cloudinary");
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
     res.render("listings/index.ejs", { allListings });
@@ -53,13 +53,41 @@ module.exports.renderEditForm = async (req, res) => {
     res.render("listings/edit.ejs", { listing, originalImageUrl });
 };
 
+// module.exports.updateListing = async (req, res) => {
+//     const { id } = req.params;
+//     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+
+//     // Handle new image upload
+//     if (req.file) {
+//         // Delete old image from Cloudinary
+//         if (listing.image.filename && listing.image.filename !== "default-listing-image") {
+//             await cloudinary.uploader.destroy(listing.image.filename);
+//         }
+
+//         // Set new image URL and filename
+//         const newImage = {
+//             url: req.file.path,
+//             filename: req.file.filename
+//         };
+
+//         // Update only the image field in the database
+//         await Listing.findByIdAndUpdate(id, { image: newImage });
+//     }
+
+//     req.flash("success", "Listing Updated Successfully! ✅");
+//     res.redirect(`/listings/${id}`);
+// };
 module.exports.updateListing = async (req, res) => {
     const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    
+    // FIX: Assign the result of findByIdAndUpdate to a variable named 'listing'.
+    // By default, mongoose returns the *old* document before the update, which is exactly what we need.
+    const listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
     // Handle new image upload
     if (req.file) {
         // Delete old image from Cloudinary
+        // Now 'listing' exists, so this check works
         if (listing.image.filename && listing.image.filename !== "default-listing-image") {
             await cloudinary.uploader.destroy(listing.image.filename);
         }
@@ -70,14 +98,13 @@ module.exports.updateListing = async (req, res) => {
             filename: req.file.filename
         };
 
-        // Update only the image field in the database
+        // Update only the image field in the database with the new data
         await Listing.findByIdAndUpdate(id, { image: newImage });
     }
 
     req.flash("success", "Listing Updated Successfully! ✅");
     res.redirect(`/listings/${id}`);
 };
-
 module.exports.destroyListing = async (req, res) => {
     const { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
