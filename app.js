@@ -7,20 +7,24 @@ const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
 // Use environment variable for Mongo URL 
-// const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/travelCravings";
-const dbUrl= process.env.ATLASDB_URL;
+const dbUrl = process.env.ATLASDB_URL; // Kept your exact variable name
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 
-// IMPORTS FOR AUTHENTICATION/SESSION/FLASH (Ensure these are installed)
-
+// IMPORTS FOR AUTHENTICATION/SESSION/FLASH
 const session = require("express-session"); 
-const MongoStore= require("connect-mongo");
+
+// --- FIX START: robust import for connect-mongo ---
+// This handles the import safely regardless of Node version
+const MongoStoreRaw = require("connect-mongo");
+const MongoStore = MongoStoreRaw.default || MongoStoreRaw;
+// --- FIX END ---
+
 const flash = require("connect-flash"); 
 const passport = require("passport");
 const LocalStrategy = require("passport-local"); 
-const User = require("./models/user.js"); // Assuming User model path
+const User = require("./models/user.js"); 
 
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
@@ -43,21 +47,23 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+// Configure MongoStore
 const store = MongoStore.create({
-    mongoUrl:dbUrl,
+    mongoUrl: dbUrl,
     crypto: {
         secret: process.env.SECRET,
     },
-    touchAfter: 24*3600,
+    touchAfter: 24 * 3600,
 });
 
-store.on("error",()=>{
-    console.log("ERROR IN MONGO SESSION STORE",err);
+store.on("error", (err) => {
+    console.log("ERROR IN MONGO SESSION STORE", err);
 });
+
 // Configure Session
 const sessionOptions = {
     store,
-    secret: process.env.SECRET ,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { 
@@ -67,12 +73,10 @@ const sessionOptions = {
     }
 };
 
-
-
 app.use(session(sessionOptions)); 
 app.use(flash()); 
 
-// Passport Initialization (MUST come after session middleware)
+// Passport Initialization
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -80,9 +84,8 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// FIX: Flash & Locals Middleware (MUST come BEFORE any route rendering EJS)
+// Locals Middleware
 app.use((req, res, next) => {
-    // This line makes req.user (if logged in) available as currUser in all EJS templates.
     res.locals.currUser = req.user; 
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
@@ -93,7 +96,7 @@ app.get("/", (req, res) => {
     res.send("HI, I am root");
 });
 
-// Use Routers (MUST come AFTER locals middleware)
+// Use Routers
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
 app.use("/", users); 
