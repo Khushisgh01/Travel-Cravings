@@ -34,8 +34,8 @@ main().then(() => {
     console.log("connected to DB");
 }).catch(err => {
     console.log("DB connection failed:", err.message);
-    // App still runs, only DB-dependent routes will fail
 });
+
 
 async function main() {
     await mongoose.connect(dbUrl);
@@ -48,22 +48,22 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-// Configure MongoStore
-const store = MongoStore.create({
-    mongoUrl: dbUrl,
-    crypto: {
-        secret: process.env.SECRET,
-    },
-    touchAfter: 24 * 3600,
-});
+let store;
+try {
+    store = MongoStore.create({
+        mongoUrl: dbUrl,
+        crypto: { secret: process.env.SECRET },
+        touchAfter: 24 * 3600,
+    });
+    store.on("error", (err) => console.log("SESSION STORE ERROR", err));
+} catch(err) {
+    console.log("MongoStore failed:", err.message);
+    // fallback to memory store
+    store = undefined;
+}
 
-store.on("error", (err) => {
-    console.log("ERROR IN MONGO SESSION STORE", err);
-});
-
-// Configure Session
 const sessionOptions = {
-    store,
+    store: store, // undefined = memory store (fine for dev)
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
@@ -101,6 +101,39 @@ app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
 app.use("/", users); 
 
+app.post("/api/chat", express.json(), async (req, res) => {
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        max_tokens: 500,
+        messages: [
+          {
+            role: "system",
+            content: "You are the friendly AI travel guide for TravelCravings — built by Khushi Singh. Help users find stays (beaches, mountains, castles, camping, lakeside, urban). Keep replies to 2–4 sentences."
+          },
+          ...req.body.messages
+        ]
+      })
+    });
+    const data = await response.json();
+
+    // ← ADD THIS to see what Groq is actually returning
+    console.log("GROQ RESPONSE:", JSON.stringify(data, null, 2));
+
+    res.json({
+      content: [{ text: data.choices?.[0]?.message?.content || "Try again!" }]
+    });
+  } catch(err) {
+    console.error("GROQ ERROR:", err); // ← AND THIS
+    res.status(500).json({ error: "AI error" });
+  }
+});
 // Page not found middleware
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
@@ -120,3 +153,4 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
     console.log("server is listening to port 8080 ");
 });
+console.log("GROQ KEY:", process.env.GROQ_API_KEY ? "✅ " + process.env.GROQ_API_KEY.substring(0, 8) + "..." : "❌ MISSING");

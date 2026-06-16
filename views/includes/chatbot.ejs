@@ -1,0 +1,396 @@
+<!-- ── TRAVELCRAVINGS FLOATING AI CHATBOT ── -->
+<div id="tc-chat-root">
+
+  <!-- Floating bubble button -->
+  <button id="tc-bubble" onclick="tcToggleChat()" aria-label="Open AI Travel Guide">
+    <span id="tc-bubble-icon">✦</span>
+    <span id="tc-bubble-label">AI Guide</span>
+    <span id="tc-notif-dot"></span>
+  </button>
+
+  <!-- Chat panel -->
+  <div id="tc-panel">
+    <!-- Header -->
+    <div id="tc-head">
+      <div id="tc-head-left">
+        <div id="tc-av">TC</div>
+        <div>
+          <div id="tc-head-name">TravelCravings AI</div>
+          <div id="tc-head-status"><span id="tc-online-dot"></span>online · ready to help</div>
+        </div>
+      </div>
+      <button id="tc-close" onclick="tcToggleChat()" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="tc-msgs">
+      <div class="tc-msg tc-bot">
+        Hey! I'm your TravelCravings guide 🌍<br>Ask me about stays, travel tips, packing lists, or how the site works!
+      </div>
+    </div>
+
+    <!-- Quick chips -->
+    <div id="tc-chips">
+      <button class="tc-chip" onclick="tcChipSend(this)">🏖️ Best beach stays?</button>
+      <button class="tc-chip" onclick="tcChipSend(this)">🏔️ Mountain packing tips</button>
+      <button class="tc-chip" onclick="tcChipSend(this)">🏡 How to list my place?</button>
+      <button class="tc-chip" onclick="tcChipSend(this)">⭐ How reviews work?</button>
+    </div>
+
+    <!-- Input -->
+    <div id="tc-input-row">
+      <input
+        id="tc-input"
+        placeholder="Ask anything about travel…"
+        onkeydown="if(event.key==='Enter') tcSendMsg()"
+        autocomplete="off"
+      />
+      <button id="tc-send" onclick="tcSendMsg()" aria-label="Send">➤</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ── ROOT ── */
+  #tc-chat-root {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* ── BUBBLE BUTTON ── */
+  #tc-bubble {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 20px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(124, 92, 252, 0.45);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    letter-spacing: 0.2px;
+  }
+  #tc-bubble:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 14px 40px rgba(124, 92, 252, 0.55);
+  }
+  #tc-bubble-icon {
+    font-size: 16px;
+    animation: tc-spin-idle 4s linear infinite;
+  }
+  @keyframes tc-spin-idle {
+    0%, 80%, 100% { transform: rotate(0deg); }
+    90% { transform: rotate(20deg); }
+    95% { transform: rotate(-10deg); }
+  }
+
+  /* notification dot */
+  #tc-notif-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+    position: absolute;
+    top: 8px; right: 8px;
+    box-shadow: 0 0 6px rgba(34,197,94,0.7);
+    animation: tc-pulse 2s ease-in-out infinite;
+  }
+  @keyframes tc-pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.8); } }
+
+  /* ── PANEL ── */
+  #tc-panel {
+    display: none;
+    flex-direction: column;
+    width: 340px;
+    max-height: 500px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 64px rgba(124, 92, 252, 0.18), 0 4px 16px rgba(0,0,0,0.06);
+    margin-bottom: 14px;
+    animation: tc-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes tc-slide-in {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes tc-slide-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(12px) scale(0.95); }
+  }
+
+  /* ── HEADER ── */
+  #tc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(56,182,255,0.08));
+    border-bottom: 1px solid rgba(255,255,255,0.7);
+    flex-shrink: 0;
+  }
+  #tc-head-left { display: flex; align-items: center; gap: 10px; }
+  #tc-av {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px; color: #fff;
+    flex-shrink: 0;
+    font-family: 'Syne', system-ui, sans-serif;
+    box-shadow: 0 4px 12px rgba(124,92,252,0.3);
+  }
+  #tc-head-name { font-size: 13px; font-weight: 600; color: #1e1b3a; }
+  #tc-head-status { font-size: 10px; color: #7c5cfc; display: flex; align-items: center; gap: 4px; margin-top: 1px; }
+  #tc-online-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e;
+    display: inline-block;
+    animation: tc-pulse 2s ease-in-out infinite;
+  }
+  #tc-close {
+    background: rgba(0,0,0,0.06); border: none; cursor: pointer;
+    width: 28px; height: 28px; border-radius: 50%;
+    color: #9a94b8; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  #tc-close:hover { background: rgba(124,92,252,0.12); color: #7c5cfc; }
+
+  /* ── MESSAGES ── */
+  #tc-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124,92,252,0.2) transparent;
+    min-height: 200px;
+    max-height: 280px;
+  }
+  #tc-msgs::-webkit-scrollbar { width: 4px; }
+  #tc-msgs::-webkit-scrollbar-thumb { background: rgba(124,92,252,0.2); border-radius: 4px; }
+
+  .tc-msg {
+    max-width: 88%;
+    padding: 9px 13px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.55;
+    animation: tc-msg-in 0.22s ease both;
+    word-wrap: break-word;
+  }
+  @keyframes tc-msg-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tc-bot {
+    background: rgba(255,255,255,0.8);
+    color: #3a3660;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.95);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .tc-user {
+    background: linear-gradient(135deg, rgba(124,92,252,0.15), rgba(56,182,255,0.15));
+    color: #1e1b3a;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+    border: 1px solid rgba(124,92,252,0.2);
+  }
+
+  /* typing dots */
+  .tc-typing { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+  .tc-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #9a94b8;
+    animation: tc-tp 1.2s ease-in-out infinite;
+  }
+  .tc-dot:nth-child(2) { animation-delay: .2s; }
+  .tc-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes tc-tp { 0%,80%,100% { transform:scale(0.7); opacity:0.35; } 40% { transform:scale(1); opacity:1; } }
+
+  /* ── CHIPS ── */
+  #tc-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 6px 12px 10px;
+    border-top: 1px solid rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.3);
+  }
+  .tc-chip {
+    font-size: 11px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(124,92,252,0.2);
+    color: #5a5478;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .tc-chip:hover {
+    background: rgba(124,92,252,0.1);
+    color: #7c5cfc;
+    border-color: rgba(124,92,252,0.4);
+    transform: translateY(-1px);
+  }
+
+  /* ── INPUT ROW ── */
+  #tc-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.4);
+    flex-shrink: 0;
+  }
+  #tc-input {
+    flex: 1;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(124,92,252,0.2);
+    border-radius: 12px;
+    padding: 9px 12px;
+    font-size: 13px;
+    color: #1e1b3a;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #tc-input:focus {
+    border-color: rgba(124,92,252,0.5);
+    box-shadow: 0 0 0 3px rgba(124,92,252,0.08);
+  }
+  #tc-input::placeholder { color: #b0aac8; }
+  #tc-send {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px;
+    flex-shrink: 0;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 12px rgba(124,92,252,0.3);
+  }
+  #tc-send:hover { opacity: 0.88; transform: scale(1.05); }
+  #tc-send:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 480px) {
+    #tc-chat-root { bottom: 16px; right: 16px; }
+    #tc-panel { width: calc(100vw - 32px); }
+    #tc-bubble-label { display: none; }
+    #tc-bubble { padding: 14px; border-radius: 50%; }
+  }
+</style>
+
+<script>
+(function() {
+  let tcOpen = false;
+  let tcHistory = [];
+  let tcLoading = false;
+  let tcChipsVisible = true;
+
+  window.tcToggleChat = function() {
+    tcOpen = !tcOpen;
+    const panel = document.getElementById('tc-panel');
+    const dot = document.getElementById('tc-notif-dot');
+
+    if (tcOpen) {
+      panel.style.display = 'flex';
+      panel.style.animation = 'tc-slide-in 0.3s cubic-bezier(0.34,1.56,0.64,1) both';
+      if (dot) dot.style.display = 'none';
+      setTimeout(() => document.getElementById('tc-input').focus(), 300);
+    } else {
+      panel.style.animation = 'tc-slide-out 0.2s ease both';
+      setTimeout(() => { panel.style.display = 'none'; }, 200);
+    }
+  };
+
+  window.tcChipSend = function(el) {
+    document.getElementById('tc-input').value = el.textContent.replace(/^[^\s]+\s/, '').trim();
+    // hide chips
+    document.getElementById('tc-chips').style.display = 'none';
+    tcChipsVisible = false;
+    tcSendMsg();
+  };
+
+  function tcAppendMsg(txt, role) {
+    const m = document.getElementById('tc-msgs');
+    const d = document.createElement('div');
+    d.className = 'tc-msg ' + (role === 'user' ? 'tc-user' : 'tc-bot');
+    d.textContent = txt;
+    m.appendChild(d);
+    m.scrollTop = m.scrollHeight;
+  }
+
+  function tcShowTyping() {
+    const m = document.getElementById('tc-msgs');
+    const d = document.createElement('div');
+    d.className = 'tc-msg tc-bot';
+    d.id = 'tc-typing';
+    d.innerHTML = '<div class="tc-typing"><div class="tc-dot"></div><div class="tc-dot"></div><div class="tc-dot"></div></div>';
+    m.appendChild(d);
+    m.scrollTop = m.scrollHeight;
+  }
+
+  window.tcSendMsg = async function() {
+    if (tcLoading) return;
+    const inp = document.getElementById('tc-input');
+    const txt = inp.value.trim();
+    if (!txt) return;
+
+    inp.value = '';
+    tcAppendMsg(txt, 'user');
+    tcHistory.push({ role: 'user', content: txt });
+
+    tcLoading = true;
+    document.getElementById('tc-send').disabled = true;
+    tcShowTyping();
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: tcHistory })
+      });
+      const data = await res.json();
+      const tyEl = document.getElementById('tc-typing');
+      if (tyEl) tyEl.remove();
+
+      const reply = data.content?.[0]?.text || "Sorry, couldn't reach the AI — try again!";
+      tcHistory.push({ role: 'assistant', content: reply });
+      tcAppendMsg(reply, 'bot');
+    } catch(e) {
+      const tyEl = document.getElementById('tc-typing');
+      if (tyEl) tyEl.remove();
+      tcAppendMsg('Network issue — please try again!', 'bot');
+    }
+
+    tcLoading = false;
+    document.getElementById('tc-send').disabled = false;
+    document.getElementById('tc-input').focus();
+  };
+
+  // Show notif dot after 3s to draw attention
+  setTimeout(() => {
+    const dot = document.getElementById('tc-notif-dot');
+    if (dot && !tcOpen) dot.style.display = 'block';
+  }, 3000);
+})();
+</script>
