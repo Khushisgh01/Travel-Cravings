@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelCravings — Find Your Perfect Stay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f4ff;
+      color: #1e1b3a;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── BLOBS ── */
+    .blobs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.6;
+    }
+    .b1 { width: 560px; height: 560px; background: #c7b8ff; top: -160px; left: -120px; animation: morph1 13s ease-in-out infinite alternate; }
+    .b2 { width: 480px; height: 480px; background: #b8e4ff; top: 15%; right: -100px; animation: morph2 16s ease-in-out infinite alternate; }
+    .b3 { width: 420px; height: 420px; background: #d4f0c8; bottom: 5%; left: 10%; animation: morph3 11s ease-in-out infinite alternate; }
+    .b4 { width: 340px; height: 340px; background: #ffd6e8; top: 55%; right: 18%; animation: morph4 14s ease-in-out infinite alternate; }
+    .b5 { width: 280px; height: 280px; background: #ffe8b8; top: 72%; left: 55%; animation: morph5 10s ease-in-out infinite alternate; }
+    .b6 { width: 220px; height: 220px; background: #c7e8ff; top: 38%; left: 38%; animation: morph6 12s ease-in-out infinite alternate; }
+
+    @keyframes morph1 {
+      0%   { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0,0) scale(1); }
+      50%  { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(50px, 70px) scale(1.1); }
+      100% { border-radius: 50% 60% 40% 70% / 40% 70% 60% 30%; transform: translate(-20px, 30px) scale(0.95); }
+    }
+    @keyframes morph2 {
+      0%   { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; transform: translate(0,0) scale(1); }
+      50%  { border-radius: 60% 40% 30% 70% / 40% 70% 50% 60%; transform: translate(-50px, 50px) scale(1.08); }
+      100% { border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%; transform: translate(25px, -35px) scale(1.05); }
+    }
+    @keyframes morph3 {
+      0%   { border-radius: 50% 50% 60% 40% / 40% 60% 50% 60%; transform: translate(0,0) scale(1); }
+      50%  { border-radius: 40% 60% 40% 60% / 60% 40% 70% 30%; transform: translate(70px, -50px) scale(1.12); }
+      100% { border-radius: 60% 40% 70% 30% / 50% 50% 40% 60%; transform: translate(-30px, 55px) scale(0.92); }
+    }
+    @keyframes morph4 {
+      0%   { border-radius: 70% 30% 50% 50% / 60% 40% 60% 40%; transform: translate(0,0) scale(1); }
+      50%  { border-radius: 30% 70% 40% 60% / 40% 60% 30% 70%; transform: translate(-45px, -65px) scale(1.15); }
+      100% { border-radius: 50% 50% 60% 40% / 70% 30% 50% 50%; transform: translate(30px, 25px) scale(0.9); }
+    }
+    @keyframes morph5 {
+      0%   { border-radius: 40% 60% 70% 30% / 50% 70% 30% 50%; transform: translate(0,0) scale(1); }
+      50%  { border-radius: 70% 30% 40% 60% / 30% 50% 70% 40%; transform: translate(-30px, 55px) scale(1.2); }
+      100% { border-radius: 60% 40% 50% 50% / 40% 60% 40% 60%; transform: translate(55px, -20px) scale(0.88); }
+    }
+    @keyframes morph6 {
+      0%   { border-radius: 50% 50% 40% 60% / 40% 50% 60% 50%; transform: translate(0,0) scale(1); }
+      50%  { border-radius: 60% 40% 60% 40% / 60% 40% 50% 50%; transform: translate(45px, 45px) scale(1.1); }
+      100% { border-radius: 40% 60% 30% 70% / 50% 40% 70% 30%; transform: translate(-40px, -40px) scale(0.95); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      padding: 16px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+      animation: fadeDown 0.6s ease both;
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #1e1b3a;
+      letter-spacing: -0.4px;
+      text-decoration: none;
+    }
+    .logo span {
+      background: linear-gradient(90deg, #7c5cfc, #38b6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a {
+      color: #5a5478;
+      font-size: 13px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #7c5cfc; }
+    .nav-cta {
+      background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 4px 18px rgba(124, 92, 252, 0.3);
+    }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      overflow: hidden;
+    }
+
+    /* Hero text — visible by default, CSS animates in */
+    .hero-kicker {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #7c5cfc;
+      margin-bottom: 22px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(52px, 8.5vw, 108px);
+      font-weight: 800;
+      line-height: 0.93;
+      letter-spacing: -4px;
+      color: #1e1b3a;
+      max-width: 860px;
+      margin-bottom: 4px;
+      animation: fadeUp 0.8s 0.35s ease both;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(135deg, #7c5cfc 0%, #38b6ff 50%, #7c5cfc 100%);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite, fadeUp 0.8s 0.35s ease both;
+    }
+    @keyframes shimmer { 0% { background-position: 0% } 100% { background-position: 200% } }
+    .hero-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: #7a7494;
+      max-width: 480px;
+      line-height: 1.8;
+      margin: 26px auto 40px;
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.65s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 8px 30px rgba(124, 92, 252, 0.35);
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      color: #1e1b3a;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-glass:hover { background: rgba(255,255,255,0.75); transform: translateY(-2px); }
+
+    /* floating chips */
+    .float-chips { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .fchip {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50px;
+      padding: 9px 18px;
+      font-size: 12px;
+      color: #4a4270;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      font-weight: 400;
+      box-shadow: 0 4px 20px rgba(124, 92, 252, 0.08);
+    }
+    .fchip .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .fc1 { top: 20%; left: 4%; animation: floatA 6s ease-in-out infinite; }
+    .fc2 { top: 28%; right: 5%; animation: floatB 7.5s ease-in-out infinite; }
+    .fc3 { top: 62%; left: 3%; animation: floatC 5.5s ease-in-out infinite; }
+    .fc4 { bottom: 22%; right: 4%; animation: floatA 8s ease-in-out infinite 1s; }
+    .fc5 { bottom: 34%; left: 13%; animation: floatB 6.5s ease-in-out infinite 0.5s; }
+    @keyframes floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+    @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(13px); } }
+    @keyframes floatC { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-10px) translateX(6px); } }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.6);
+      padding: 13px 0;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 10;
+    }
+    .ticker-track { display: flex; width: max-content; animation: tick 28s linear infinite; }
+    .tick-item {
+      padding: 0 28px;
+      font-size: 11px;
+      color: #8a84aa;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      white-space: nowrap;
+    }
+    .tick-sep { width: 5px; height: 5px; border-radius: 50%; background: rgba(124, 92, 252, 0.4); }
+    @keyframes tick { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ── SECTIONS ── */
+    .section { position: relative; z-index: 10; padding: 90px 48px; max-width: 1100px; margin: 0 auto; }
+    .sec-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #7c5cfc;
+      margin-bottom: 12px;
+    }
+    .sec-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(30px, 4vw, 50px);
+      font-weight: 700;
+      color: #1e1b3a;
+      line-height: 1.1;
+      max-width: 520px;
+      margin-bottom: 52px;
+      letter-spacing: -1.5px;
+    }
+
+    /* ── FEATURES ── */
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feat-card {
+      padding: 28px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 4px 24px rgba(124, 92, 252, 0.06);
+      transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .feat-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.25s, background 0.25s;
+    }
+    .feat-card:hover {
+      transform: translateY(-6px) !important;
+      box-shadow: 0 16px 48px rgba(124, 92, 252, 0.14);
+      background: rgba(255, 255, 255, 0.68);
+    }
+    .feat-ico {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(124,92,252,0.12), rgba(56,182,255,0.12));
+      border: 1px solid rgba(124, 92, 252, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      margin-bottom: 18px;
+    }
+    .feat-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1e1b3a;
+      margin-bottom: 8px;
+    }
+    .feat-card p { font-size: 13px; color: #7a7494; line-height: 1.65; }
+
+    /* ── DESTINATIONS ── */
+    .dest-row { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding-bottom: 6px; }
+    .dest-row::-webkit-scrollbar { display: none; }
+    .dcard {
+      flex-shrink: 0;
+      width: 200px;
+      height: 280px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 20px rgba(124, 92, 252, 0.07);
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    .dcard.visible {
+      opacity: 1;
+      transform: translateX(0);
+      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s;
+    }
+    .dcard:hover { transform: translateY(-6px) scale(1.02) !important; box-shadow: 0 16px 40px rgba(124, 92, 252, 0.15); }
+    .dcard-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 64px; opacity: 0.5; }
+    .dcard-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px;
+      background: linear-gradient(to top, rgba(255,255,255,0.85) 0%, transparent 100%);
+    }
+    .dcard-name { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: #1e1b3a; }
+    .dcard-sub { font-size: 11px; color: #7a7494; margin-top: 2px; }
+
+    /* ── ABOUT ── */
+    .about-wrap {
+      position: relative; z-index: 10;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.6);
+    }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about-text { opacity: 0; transform: translateX(-30px); }
+    .about-text.visible { opacity: 1; transform: translateX(0); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .about-text p { font-size: 14px; color: #7a7494; line-height: 1.85; margin-bottom: 16px; }
+    .about-text strong { color: #1e1b3a; font-weight: 500; }
+    .builder-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 50px;
+      padding: 8px 20px 8px 8px;
+      margin-top: 10px;
+      box-shadow: 0 4px 16px rgba(124,92,252,0.08);
+    }
+    .b-avi {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #fff;
+    }
+    .b-info strong { display: block; font-size: 13px; color: #1e1b3a; font-weight: 500; }
+    .b-info span { font-size: 11px; color: #9a94b8; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .sbox {
+      padding: 24px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 4px 16px rgba(124,92,252,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    .sbox.visible { opacity: 1; transform: scale(1); transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.2s; }
+    .sbox:hover { transform: translateY(-3px) scale(1) !important; box-shadow: 0 10px 30px rgba(124,92,252,0.12); }
+    .snum {
+      font-family: 'Syne', sans-serif;
+      font-size: 38px; font-weight: 800;
+      background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 1;
+    }
+    .slbl { font-size: 12px; color: #9a94b8; margin-top: 5px; }
+
+    /* ── CHAT SECTION ── */
+    .chat-section {
+      position: relative; z-index: 10;
+      padding: 60px 48px;
+      text-align: center;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,255,255,0.6);
+    }
+    .chat-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px; font-weight: 700;
+      color: #1e1b3a; letter-spacing: -1px; margin-bottom: 8px;
+    }
+    .chat-section > p { font-size: 13px; color: #9a94b8; margin-bottom: 24px; }
+    .chat-open-btn {
+      background: linear-gradient(135deg, #7c5cfc, #38b6ff);
+      color: #fff; border: none;
+      padding: 13px 28px; border-radius: 50px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 8px 28px rgba(124,92,252,0.3);
+    }
+    .chat-open-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .chat-panel {
+      display: none;
+      flex-direction: column;
+      max-width: 380px;
+      margin: 20px auto 0;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 12px 48px rgba(124,92,252,0.14);
+    }
+    .chat-head {
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.7);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .chat-av {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg,#7c5cfc,#38b6ff);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne',sans-serif; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .online-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+      display: inline-block; margin-right: 4px;
+      box-shadow: 0 0 6px rgba(34,197,94,0.6);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .chat-hinfo h4 { font-size: 13px; font-weight: 500; color: #1e1b3a; }
+    .chat-hinfo p { font-size: 10px; color: #7c5cfc; }
+    .chat-close-btn {
+      margin-left: auto; background: none; border: none; cursor: pointer;
+      color: #9a94b8; font-size: 16px; padding: 4px; line-height: 1;
+    }
+    .chat-msgs {
+      height: 260px; overflow-y: auto;
+      padding: 14px; display: flex; flex-direction: column; gap: 10px;
+      scrollbar-width: none;
+    }
+    .chat-msgs::-webkit-scrollbar { display: none; }
+    .msg { max-width: 85%; padding: 9px 13px; border-radius: 14px; font-size: 13px; line-height: 1.55; }
+    .msg-bot {
+      background: rgba(255,255,255,0.7);
+      color: #3a3660; align-self: flex-start;
+      border-bottom-left-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.9);
+      animation: msgIn 0.25s ease both;
+    }
+    .msg-user {
+      background: linear-gradient(135deg,rgba(124,92,252,0.15),rgba(56,182,255,0.15));
+      color: #1e1b3a; align-self: flex-end;
+      border-bottom-right-radius: 3px;
+      border: 1px solid rgba(124,92,252,0.2);
+      animation: msgIn 0.25s ease both;
+    }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .chips-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 12px 10px; }
+    .chip {
+      font-size: 11px; padding: 5px 13px; border-radius: 20px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(124,92,252,0.2);
+      color: #5a5478; cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .chip:hover { background: rgba(124,92,252,0.1); color: #7c5cfc; border-color: rgba(124,92,252,0.4); }
+    .chat-input-row {
+      padding: 10px 12px;
+      border-top: 1px solid rgba(255,255,255,0.7);
+      display: flex; gap: 8px;
+    }
+    .chat-in {
+      flex: 1;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(124,92,252,0.2);
+      border-radius: 12px; padding: 9px 12px;
+      font-size: 13px; color: #1e1b3a; outline: none;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+    }
+    .chat-in:focus { border-color: rgba(124,92,252,0.5); }
+    .chat-in::placeholder { color: #b0aac8; }
+    .chat-send {
+      width: 36px; height: 36px; border-radius: 12px;
+      background: linear-gradient(135deg,#7c5cfc,#38b6ff);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 15px; flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .chat-send:hover { opacity: 0.85; }
+    .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+    .typing-d { display: flex; gap: 4px; align-items: center; padding: 2px 0; }
+    .td { width: 6px; height: 6px; border-radius: 50%; background: #9a94b8; animation: tp 1.2s ease-in-out infinite; }
+    .td:nth-child(2) { animation-delay: .2s; }
+    .td:nth-child(3) { animation-delay: .4s; }
+    @keyframes tp { 0%,80%,100% { transform: scale(0.7); opacity: 0.35; } 40% { transform: scale(1); opacity: 1; } }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 10;
+      padding: 28px 48px; text-align: center;
+      font-size: 12px; color: #b0aac8;
+      border-top: 1px solid rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(10px);
+    }
+    footer a { color: #7c5cfc; text-decoration: none; }
+    footer a:hover { color: #38b6ff; }
+
+    /* ── SCROLL REVEAL BASE ── */
+    .reveal { opacity: 0; transform: translateY(30px); }
+    .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.6s ease, transform 0.6s ease; }
+  </style>
+</head>
+<body>
+
+<!-- Morphing blobs -->
+<div class="blobs">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+  <div class="blob b5"></div>
+  <div class="blob b6"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">Travel<span>Cravings</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#explore">Explore</a>
+    <a href="#about">About</a>
+    <a href="/listings" class="nav-cta">Browse Stays</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="float-chips">
+    <div class="fchip fc1"><span class="dot" style="background:#6ee7b7"></span>200+ listings</div>
+    <div class="fchip fc2"><span class="dot" style="background:#7c5cfc"></span>Live Mapbox</div>
+    <div class="fchip fc3"><span class="dot" style="background:#38b6ff"></span>Star reviews</div>
+    <div class="fchip fc4"><span class="dot" style="background:#f9a8d4"></span>Cloudinary images</div>
+    <div class="fchip fc5"><span class="dot" style="background:#fbbf24"></span>AI travel guide</div>
+  </div>
+
+  <p class="hero-kicker">Crafted by Khushi Singh</p>
+
+  <h1>Wander<br><span class="grad">without limits.</span></h1>
+
+  <p class="hero-sub">Discover extraordinary stays — from misty mountain hideaways to sun-soaked beachfronts. Every craving, satisfied.</p>
+
+  <div class="hero-btns">
+    <a href="/listings" class="btn-primary">&#9700; Explore Stays</a>
+    <button class="btn-glass" onclick="toggleChat()">&#9672; Ask AI Guide</button>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <div class="tick-item"><span>Beachside</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Mountains</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Castles</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Camping</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Lakeside</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Desert Domes</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Treehouses</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Urban Lofts</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Beachside</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Mountains</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Castles</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Camping</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Lakeside</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Desert Domes</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Treehouses</span><span class="tick-sep"></span></div>
+    <div class="tick-item"><span>Urban Lofts</span><span class="tick-sep"></span></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div id="features">
+  <div class="section">
+    <p class="sec-label reveal">Why TravelCravings</p>
+    <h2 class="sec-title reveal">Every feature your trip deserves</h2>
+    <div class="grid3">
+      <div class="feat-card">
+        <div class="feat-ico">🗺️</div>
+        <h3>Interactive maps</h3>
+        <p>Every listing pinned live on Mapbox — see exactly where you'll wake up before you book.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">✨</div>
+        <h3>Smart categories</h3>
+        <p>Filter by trending, mountains, castles, camping — find your perfect vibe in one click.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">⭐</div>
+        <h3>Verified reviews</h3>
+        <p>Honest star ratings from real travellers who've stayed and loved every moment.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">💰</div>
+        <h3>Clear pricing</h3>
+        <p>Toggle GST on or off — total price always visible up front, no hidden surprises.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">🔒</div>
+        <h3>Secure accounts</h3>
+        <p>Passport.js powered auth — sign up, create listings, manage everything safely.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">🤖</div>
+        <h3>AI travel guide</h3>
+        <p>Ask our built-in AI anything — best seasons, packing tips, culture, hidden gems.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DESTINATIONS -->
+<div id="explore">
+  <div class="section" style="padding-top: 0">
+    <p class="sec-label reveal">Explore by vibe</p>
+    <h2 class="sec-title reveal" style="margin-bottom: 28px">A stay for every soul</h2>
+    <div class="dest-row">
+      <div class="dcard"><div class="dcard-emoji">🏖️</div><div class="dcard-info"><div class="dcard-name">Beachside</div><div class="dcard-sub">Wake up to waves</div></div></div>
+      <div class="dcard"><div class="dcard-emoji">🏔️</div><div class="dcard-info"><div class="dcard-name">Mountains</div><div class="dcard-sub">Breathe the heights</div></div></div>
+      <div class="dcard"><div class="dcard-emoji">🏰</div><div class="dcard-info"><div class="dcard-name">Castles</div><div class="dcard-sub">Live like royalty</div></div></div>
+      <div class="dcard"><div class="dcard-emoji">🏕️</div><div class="dcard-info"><div class="dcard-name">Camping</div><div class="dcard-sub">Stars above you</div></div></div>
+      <div class="dcard"><div class="dcard-emoji">🌊</div><div class="dcard-info"><div class="dcard-name">Lakeside</div><div class="dcard-sub">Still water calm</div></div></div>
+      <div class="dcard"><div class="dcard-emoji">🌲</div><div class="dcard-info"><div class="dcard-name">Forest</div><div class="dcard-sub">Lost in the green</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="about-wrap" id="about">
+  <div class="section">
+    <div class="about-grid">
+      <div class="about-text" id="aboutLeft">
+        <p class="sec-label">The builder</p>
+        <h2 class="sec-title" style="margin-bottom: 20px">Built end-to-end, from scratch</h2>
+        <p>TravelCravings is a full-stack project by <strong>Khushi Singh</strong> — every line from auth to Cloudinary image uploads to Mapbox geocoding written with care and curiosity.</p>
+        <p>Stack: <strong>Node.js · Express · MongoDB Atlas · Passport.js · Cloudinary · Mapbox</strong>. Deployed live on Render.</p>
+        <div class="builder-pill">
+          <div class="b-avi">K</div>
+          <div class="b-info">
+            <strong>Khushi Singh</strong>
+            <span>GitHub · Khushisgh01</span>
+          </div>
+        </div>
+      </div>
+      <div class="stat-grid" id="statGrid">
+        <div class="sbox"><div class="snum">6+</div><div class="slbl">Stay categories</div></div>
+        <div class="sbox"><div class="snum">★ 5</div><div class="slbl">Star review system</div></div>
+        <div class="sbox"><div class="snum">100%</div><div class="slbl">Full CRUD ops</div></div>
+        <div class="sbox"><div class="snum">Live</div><div class="slbl">Deployed on Render</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="chat-section" id="chatSection">
+  <h2 class="reveal">Got a travel question?</h2>
+  <p class="reveal">Our AI guide knows TravelCravings inside out — ask anything.</p>
+  <button class="chat-open-btn reveal" onclick="toggleChat()">✦ Open AI Guide</button>
+
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-head">
+      <div class="chat-av">TC</div>
+      <div class="chat-hinfo">
+        <h4>TravelCravings AI</h4>
+        <p><span class="online-dot"></span>online · ready to help</p>
+      </div>
+      <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="msg msg-bot">Hey! I'm your TravelCravings guide 🌍 Ask me about destinations, packing tips, best seasons, or how the site works!</div>
+    </div>
+    <div class="chips-row" id="chipsRow">
+      <button class="chip" onclick="chipSend(this)">Best beach stays?</button>
+      <button class="chip" onclick="chipSend(this)">Mountain packing tips</button>
+      <button class="chip" onclick="chipSend(this)">How to list my place?</button>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-in" id="chatIn" placeholder="Ask anything about travel…" onkeydown="if(event.key==='Enter') sendMsg()" />
+      <button class="chat-send" id="sendBtn" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Made with ♥ by <a href="https://github.com/Khushisgh01" target="_blank">Khushi Singh</a> &nbsp;·&nbsp; <a href="https://github.com/Khushisgh01/Travel-Cravings" target="_blank">GitHub</a> &nbsp;·&nbsp; <a href="/listings">Live Site</a></p>
+</footer>
+
+<script>
+  // ── INTERSECTION OBSERVER for scroll animations ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // stagger delay based on sibling index
+        const siblings = entry.target.parentElement.querySelectorAll(
+          '.feat-card, .dcard, .sbox, .reveal'
+        );
+        let idx = Array.from(siblings).indexOf(entry.target);
+        if (idx < 0) idx = 0;
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, idx * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.feat-card, .dcard, .sbox, .reveal').forEach(el => {
+    observer.observe(el);
+  });
+
+  // About section
+  const aboutObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        aboutObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.about-text').forEach(el => aboutObs.observe(el));
+
+  // Stat boxes stagger
+  const statObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.sbox').forEach((box, i) => {
+          setTimeout(() => box.classList.add('visible'), i * 100);
+        });
+        statObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  const statGrid = document.getElementById('statGrid');
+  if (statGrid) statObs.observe(statGrid);
+
+  // ── CHATBOT ──
+  let chatOpen = false;
+
+  function toggleChat() {
+    chatOpen = !chatOpen;
+    const panel = document.getElementById('chatPanel');
+    if (chatOpen) {
+      panel.style.display = 'flex';
+      panel.style.animation = 'chatSlideIn 0.3s ease both';
+      document.getElementById('chatIn').focus();
+    } else {
+      panel.style.animation = 'chatSlideOut 0.2s ease both';
+      setTimeout(() => { panel.style.display = 'none'; }, 200);
+    }
+  }
+
+  // inject chat animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes chatSlideIn { from { opacity:0; transform: translateY(12px) scale(0.97); } to { opacity:1; transform: translateY(0) scale(1); } }
+    @keyframes chatSlideOut { from { opacity:1; transform: translateY(0) scale(1); } to { opacity:0; transform: translateY(8px) scale(0.97); } }
+  `;
+  document.head.appendChild(style);
+
+  function chipSend(el) {
+    document.getElementById('chatIn').value = el.textContent;
+    document.getElementById('chipsRow').style.display = 'none';
+    sendMsg();
+  }
+
+  let hist = [], loading = false;
+
+  function appendMsg(txt, role) {
+    const m = document.getElementById('chatMsgs');
+    const d = document.createElement('div');
+    d.className = 'msg ' + (role === 'user' ? 'msg-user' : 'msg-bot');
+    d.textContent = txt;
+    m.appendChild(d);
+    m.scrollTop = m.scrollHeight;
+  }
+
+  function showTyping() {
+    const m = document.getElementById('chatMsgs');
+    const d = document.createElement('div');
+    d.className = 'msg msg-bot'; d.id = 'tyEl';
+    d.innerHTML = '<div class="typing-d"><div class="td"></div><div class="td"></div><div class="td"></div></div>';
+    m.appendChild(d); m.scrollTop = m.scrollHeight;
+  }
+
+  async function sendMsg() {
+    if (loading) return;
+    const inp = document.getElementById('chatIn');
+    const txt = inp.value.trim();
+    if (!txt) return;
+    inp.value = '';
+    appendMsg(txt, 'user');
+    hist.push({ role: 'user', content: txt });
+    loading = true;
+    document.getElementById('sendBtn').disabled = true;
+    showTyping();
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: `You are the friendly AI travel guide for TravelCravings — a full-stack accommodation listing platform built by Khushi Singh (GitHub: Khushisgh01). Features: accommodation categories (beaches, mountains, castles, camping, lakeside, urban), Mapbox live maps, star reviews, Cloudinary image uploads, Passport.js auth, GST price toggle, full CRUD for listings. Give warm, helpful travel advice — best seasons, packing tips, local culture, and how to use the site. Keep replies to 2–4 sentences unless a list genuinely helps.`,
+          messages: hist
+        })
+      });
+      const data = await res.json();
+      const el = document.getElementById('tyEl'); if (el) el.remove();
+      const reply = data.content?.[0]?.text || 'Oops — try again!';
+      hist.push({ role: 'assistant', content: reply });
+      appendMsg(reply, 'bot');
+    } catch(e) {
+      const el = document.getElementById('tyEl'); if (el) el.remove();
+      appendMsg('Network hiccup — please try again!', 'bot');
+    }
+    loading = false;
+    document.getElementById('sendBtn').disabled = false;
+  }
+</script>
+</body>
+</html>

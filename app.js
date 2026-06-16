@@ -33,7 +33,8 @@ const users = require("./routes/user.js");
 main().then(() => {
     console.log("connected to DB");
 }).catch(err => {
-    console.log(err);
+    console.log("DB connection failed:", err.message);
+    // App still runs, only DB-dependent routes will fail
 });
 
 async function main() {
@@ -93,9 +94,8 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-    res.send("HI, I am root");
+    res.render("landing.ejs");
 });
-
 // Use Routers
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
