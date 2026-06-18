@@ -14,12 +14,24 @@
         cursor: pointer;
         transition: 0.3s;
       }
+      .filter a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
       .filter:hover {
         opacity: 1;
         cursor: pointer;
       }
       .filter p {
         font-size: 0.8rem;
+        margin-top: 0.4rem;
+      }
+      .filter.active {
+        opacity: 1;
+        color: var(--brand-color, #fe424d);
+        border-bottom: 2px solid var(--brand-color, #fe424d);
+        padding-bottom: 0.4rem;
       }
       .tax-info {
         display: none;
@@ -33,53 +45,42 @@
         display: flex;
         align-items: center;
       }
+      .no-results {
+        text-align: center;
+        padding: 4rem 1rem;
+        color: #717171;
+      }
+      .no-results p {
+        margin-top: 1rem;
+        font-size: 1rem;
+      }
     </style>
 
+    <%
+      const filters = [
+        { key: "trending", icon: "fa-solid fa-fire", label: "Trending" },
+        { key: "rooms", icon: "fa-solid fa-bed", label: "Rooms" },
+        { key: "iconic_cities", icon: "fa-solid fa-city", label: "Iconic Cities" },
+        { key: "mountains", icon: "fa-solid fa-mountain-sun", label: "Mountains" },
+        { key: "castles", icon: "fa-brands fa-fort-awesome", label: "Castles" },
+        { key: "pools", icon: "fa-solid fa-person-swimming", label: "Amazing Pools" },
+        { key: "camping", icon: "fa-solid fa-campground", label: "Camping" },
+        { key: "farms", icon: "fa-solid fa-cow", label: "Farms" },
+        { key: "arctic", icon: "fa-regular fa-snowflake", label: "Arctic" },
+        { key: "domes", icon: "fa-solid fa-igloo", label: "Domes" },
+        { key: "boats", icon: "fa-solid fa-sailboat", label: "Boats" },
+      ];
+    %>
+
     <div id="filters">
-        <div class="filter">
-            <div><i class="fa-solid fa-fire"></i></div>
-            <p>Trending</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-bed"></i></div>
-            <p>Rooms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-city"></i></div>
-            <p>Iconic Cities</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain-sun"></i></div>
-            <p>Mountains</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-brands fa-fort-awesome"></i></div>
-            <p>Castles</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-person-swimming"></i></div>
-            <p>Amazing Pools</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-campground"></i></div>
-            <p>Camping</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-cow"></i></div>
-            <p>Farms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-regular fa-snowflake"></i></div>
-            <p>Arctic</p>
-        </div>
-        <div class="filter">
-             <div><i class="fa-solid fa-igloo"></i></div>
-            <p>Domes</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-sailboat"></i></div>
-           <p>Boats</p>
-       </div>
+        <% filters.forEach(f => { %>
+            <div class="filter <%= category === f.key ? 'active' : '' %>">
+                <a href="/listings?category=<%= category === f.key ? '' : f.key %><%= search ? '&search=' + search : '' %>">
+                    <div><i class="<%= f.icon %>"></i></div>
+                    <p><%= f.label %></p>
+                </a>
+            </div>
+        <% }) %>
 
        <div class="tax-toggle">
         <div class="form-check-reverse form-switch">
@@ -89,6 +90,16 @@
        </div>
 
     </div>
+
+    <% if (allListings.length === 0) { %>
+        <div class="no-results">
+            <i class="fa-solid fa-compass" style="font-size:2rem; color:#fe424d;"></i>
+            <p>
+                No stays found<% if (category && category !== 'all') { %> in this category<% } %><% if (search) { %> for "<%= search %>"<% } %>.
+                Try a different filter or search.
+            </p>
+        </div>
+    <% } %>
 
     <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
         <% for(let listing of allListings){ %>

@@ -29,6 +29,24 @@ const listingSchema = new Schema({
   price: Number,
   location: String,
   country: String,
+  // NEW: powers the Trending / Rooms / Mountains / etc. filter bar on /listings
+  category: {
+    type: String,
+    enum: [
+      "trending",
+      "rooms",
+      "iconic_cities",
+      "mountains",
+      "castles",
+      "pools",
+      "camping",
+      "farms",
+      "arctic",
+      "domes",
+      "boats",
+    ],
+    default: "trending",
+  },
   reviews:[
     {
       type:Schema.Types.ObjectId,

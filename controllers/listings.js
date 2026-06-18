@@ -5,23 +5,30 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 const { cloudinary } = require("../cloudinary");
 
 module.exports.index = async (req, res) => {
-    const { search } = req.query;
-    let allListings;
-    
+    const { search, category } = req.query;
+    let filter = {};
+
     if (search) {
         // Search functionality: Filter by Title, Location, or Country (Case Insensitive)
-        allListings = await Listing.find({
-            $or: [
-                { title: { $regex: search, $options: "i" } },
-                { location: { $regex: search, $options: "i" } },
-                { country: { $regex: search, $options: "i" } }
-            ]
-        });
-    } else {
-        allListings = await Listing.find({});
+        filter.$or = [
+            { title: { $regex: search, $options: "i" } },
+            { location: { $regex: search, $options: "i" } },
+            { country: { $regex: search, $options: "i" } }
+        ];
     }
-    
-    res.render("listings/index.ejs", { allListings });
+
+    if (category && category !== "all") {
+        // Filter bar: /listings?category=mountains
+        filter.category = category;
+    }
+
+    const allListings = await Listing.find(filter);
+
+    res.render("listings/index.ejs", {
+        allListings,
+        category: category || "all",
+        search: search || ""
+    });
 };
 
 module.exports.renderNewForm = (req, res) => {

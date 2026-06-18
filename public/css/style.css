@@ -197,7 +197,7 @@ footer {
     opacity: 1;
 }
 
-/* --- Show Page Styling --- */
+/* --- Show Page Styling (legacy, kept for compatibility) --- */
 .show-img {
     height: 45vh;
     width: 100%;
@@ -282,4 +282,213 @@ footer {
 .star-rating label:hover,
 .star-rating label:hover ~ label {
     color: #ffc107; /* Gold for stars */
+}
+
+/* ============================================= */
+/* NEW — Redesigned Show Page                     */
+/* ============================================= */
+
+.show-wrapper {
+    max-width: 1100px;
+    margin: 1.5rem auto 3rem;
+    padding: 0 1rem;
+}
+
+.show-header h2 {
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.show-location {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.show-location i {
+    color: var(--brand-color);
+    margin-right: 0.3rem;
+}
+
+.show-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .show-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.show-main .show-img {
+    height: 28rem;
+    margin-bottom: 0;
+}
+
+.show-host-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.host-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.host-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-color), #ff8a65);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.host-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+.host-name {
+    font-weight: 600;
+}
+
+.price-chip {
+    background: var(--bg-light);
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.price-chip span {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.show-desc {
+    margin-top: 1.2rem;
+    line-height: 1.7;
+    color: #444;
+}
+
+.owner-actions {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
+}
+
+.reviews-section {
+    margin-top: 1.5rem;
+}
+
+.review-count {
+    color: var(--text-light);
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+.review-form {
+    background: var(--bg-light);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin-top: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.rating-label {
+    font-size: 0.85rem;
+    color: var(--brand-color);
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+.review-card {
+    border: 1px solid #eee;
+    border-radius: var(--radius-md);
+    padding: 1.2rem;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.review-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.6rem;
+}
+
+.review-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #717171, #444);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.review-username {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.review-comment {
+    color: #444;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0.5rem 0 0.8rem;
+}
+
+.no-reviews {
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+.show-side {
+    position: sticky;
+    top: 6rem;
+}
+
+.show-side h5 {
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+.map-note {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 0.6rem;
 }
