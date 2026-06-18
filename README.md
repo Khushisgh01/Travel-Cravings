@@ -1,94 +1,228 @@
-# TravelCravings
+# 🌍 Travel Cravings
 
-**TravelCravings** is a full-stack web application designed to help travelers find and list unique accommodations worldwide. Built with the MERN stack (MongoDB, Express.js, and Node.js), it features a robust listing management system, user authentication, and interactive mapping.
+A full-stack web application for discovering and listing unique travel accommodations worldwide. Browse beautiful destinations, leave reviews, and manage your own listings with an intuitive and interactive interface.
 
-**Live Project:** [https://travel-cravings-2.onrender.com/listings](https://travel-cravings-2.onrender.com/listings)
+**🔗 [View Live Project](https://travel-cravings-2.onrender.com/listings)**
+
+---
+
+## 📋 Table of Contents
+
+- [About](#about)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Installation & Setup](#️-installation--setup)
+- [Environment Variables](#-environment-variables)
+- [Usage](#-usage)
+- [Screenshots](#-screenshots)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
+
+## About
+
+**Travel Cravings** is designed to help travelers discover unique accommodations and experiences around the world. Whether you're looking for a cozy mountain cabin, a beachfront cottage, or a luxurious castle stay, Travel Cravings connects travelers with property owners. The platform features real-time location mapping, user reviews, image galleries, and a seamless booking browsing experience.
 
 ---
 
 ## 🚀 Features
 
-* **Accommodation Listings**: Users can browse a wide variety of travel destinations, ranging from beachfront cottages to mountain retreats.
-* **Search and Filters**: Find destinations quickly using the search bar or filter by categories like "Trending," "Mountains," "Castles," and "Camping".
-* **Dynamic Pricing**: A tax toggle feature allows users to see the total price including GST (+18%).
-* **Interactive Maps**: Integrated Mapbox API to display the exact location of listings.
-* **User Reviews**: Authenticated users can leave ratings (using a star-based UI) and comments on listings.
-* **Image Uploads**: Cloudinary integration for seamless image hosting and management.
-* **Full CRUD Operations**: Authorized owners can create, read, update, and delete their own listings.
-* **Robust Authentication**: Secure signup and login functionality using Passport.js and passport-local-mongoose.
+- ✅ **Browse Accommodations**: Explore diverse travel destinations worldwide with detailed listings
+- 🔍 **Smart Search & Filters**: Find destinations by category (Trending, Mountains, Castles, Camping, etc.)
+- 💰 **Dynamic Pricing**: View prices with optional GST calculation (+18%)
+- 📍 **Interactive Maps**: Mapbox integration showing exact listing locations
+- ⭐ **User Reviews & Ratings**: Leave comments and star ratings on accommodations
+- 📸 **Image Management**: Cloudinary integration for reliable image hosting
+- 🔐 **Full CRUD Operations**: Create, read, update, and delete listings (with authorization)
+- 👤 **User Authentication**: Secure login/signup with Passport.js
+- ✔️ **Form Validation**: Server-side (Joi) and client-side validation for data integrity
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Frontend**: EJS (Embedded JavaScript templates), EJS-Mate (layouts), Bootstrap 5, Font Awesome, Custom CSS.
-* **Backend**: Node.js, Express.js.
-* **Database**: MongoDB Atlas with Mongoose ODM.
-* **Authentication**: Passport.js.
-* **Validation**: Joi (Server-side) and Bootstrap (Client-side).
-* **APIs**: Mapbox (Geocoding and Maps) and Cloudinary (Image Storage).
+### Frontend
+- **EJS** (Embedded JavaScript Templates) - Server-side templating
+- **EJS-Mate** - Layout management
+- **Bootstrap 5** - Responsive UI framework
+- **Font Awesome** - Icon library
+- **Custom CSS** - Styling and animations
+
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **Mongoose** - MongoDB ODM
+
+### Database
+- **MongoDB Atlas** - NoSQL cloud database
+
+### Authentication & Validation
+- **Passport.js** - Authentication middleware
+- **Passport-Local-Mongoose** - Local authentication strategy
+- **Joi** - Schema validation library
+
+### External APIs & Services
+- **Mapbox API** - Geocoding and interactive maps
+- **Cloudinary** - Cloud image storage and management
+
+### Additional Dependencies
+- **Multer** - File upload middleware
+- **Multer-Storage-Cloudinary** - Cloudinary storage engine for Multer
+- **Connect-Mongo** - MongoDB session store
+- **Connect-Flash** - Flash messaging
+- **Cookie-Parser** - Cookie parsing middleware
+- **Method-Override** - HTTP method override
+- **Dotenv** - Environment variable management
 
 ---
 
 ## 📂 Project Structure
 
-* `app.js`: The main entry point of the application.
-* `models/`: Mongoose schemas for Listings, Reviews, and Users.
-* `views/`: EJS templates for rendering the UI (Listings, Users, Layouts, and Partials).
-* `controllers/`: Logic for handling requests and interacting with models.
-* `routes/`: Route definitions for the application's resources.
-* `public/`: Static assets including CSS, client-side JS, and images.
-* `utils/`: Middleware and custom error handling classes.
+```
+Travel-Cravings/
+├── app.js                  # Main application entry point
+├── package.json            # Dependencies and scripts
+├── .env                    # Environment variables (not tracked)
+├── models/
+│   ├── listing.js         # Listing schema
+│   ├── review.js          # Review schema
+│   └── user.js            # User schema
+├── views/
+│   ├── layouts/           # Base layouts
+│   ├── listings/          # Listing pages
+│   ├── reviews/           # Review components
+│   ├── users/             # User pages
+│   └── partials/          # Reusable components
+├── controllers/
+│   ├── listingController.js
+│   ├── reviewController.js
+│   └── userController.js
+├── routes/
+│   ├── listings.js
+│   ├── reviews.js
+│   └── users.js
+├── public/
+│   ├── css/               # Custom stylesheets
+│   ├── js/                # Client-side scripts
+│   └── images/            # Static images
+├── utils/
+│   ├── middleware.js      # Custom middleware
+│   └── ExpressError.js    # Error handling class
+├── init/
+│   └── index.js           # Database seeding script
+└── README.md              # Project documentation
+```
 
 ---
 
 ## ⚙️ Installation & Setup
 
-1. **Clone the repository:**
-```bash
-git clone <repository-url>
-cd travel-cravings
+### Prerequisites
+- Node.js (v22.20.0 or higher)
+- npm or yarn
+- MongoDB Atlas account
+- Cloudinary account
+- Mapbox account
 
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/Khushisgh01/Travel-Cravings.git
+cd travel-cravings
 ```
 
-
-2. **Install dependencies:**
+### Step 2: Install Dependencies
 ```bash
 npm install
-
 ```
 
+### Step 3: Configure Environment Variables
+Create a `.env` file in the root directory and add your credentials:
 
-3. **Environment Variables:**
-Create a `.env` file in the root directory (this file is ignored by Git) and add the following:
 ```env
-CLOUD_NAME=your_cloudinary_name
-CLOUD_API_KEY=your_cloudinary_key
-CLOUD_API_SECRET=your_cloudinary_secret
-MAP_TOKEN=your_mapbox_public_token
-ATLASDB_URL=your_mongodb_atlas_connection_string
-SECRET=your_session_secret
+# Cloudinary Configuration
+CLOUD_NAME=your_cloudinary_cloud_name
+CLOUD_API_KEY=your_cloudinary_api_key
+CLOUD_API_SECRET=your_cloudinary_api_secret
 
+# Mapbox Configuration
+MAP_TOKEN=your_mapbox_public_token
+
+# MongoDB Configuration
+ATLASDB_URL=mongodb+srv://username:password@cluster.mongodb.net/dbname
+
+# Session Configuration
+SECRET=your_random_session_secret_key
 ```
 
+**How to get credentials:**
+- **Cloudinary**: Sign up at [cloudinary.com](https://cloudinary.com) and get your API credentials from the dashboard
+- **Mapbox**: Sign up at [mapbox.com](https://mapbox.com) and create a public access token
+- **MongoDB Atlas**: Create a cluster at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas) and get the connection string
 
-4. **Initialize Database (Optional):**
-To seed the database with sample data, run:
+### Step 4: Seed the Database (Optional)
+Populate the database with sample listings:
 ```bash
 node init/index.js
-
 ```
 
-
-5. **Start the application:**
+### Step 5: Start the Application
 ```bash
 npm start
-
 ```
 
+The application will run on `http://localhost:8080`
 
-The server will run on port `8080`.
+---
+
+## 🌐 Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `CLOUD_NAME` | Cloudinary cloud name | `your_cloud_name` |
+| `CLOUD_API_KEY` | Cloudinary API key | `1234567890` |
+| `CLOUD_API_SECRET` | Cloudinary API secret | `abc123xyz` |
+| `MAP_TOKEN` | Mapbox public access token | `pk.eyJ...` |
+| `ATLASDB_URL` | MongoDB Atlas connection string | `mongodb+srv://...` |
+| `SECRET` | Express session secret | `your_secret_key` |
+
+---
+
+## 💡 Usage
+
+1. **Create an Account**: Sign up with your email and password
+2. **Browse Listings**: Explore accommodations using search and filters
+3. **View Details**: Click on a listing to see photos, location, and reviews
+4. **Leave Reviews**: Rate and comment on accommodations you're interested in
+5. **Create a Listing**: Add your own property with images and details
+6. **Manage Listings**: Edit or delete your own listings from your profile
+7. **View on Map**: See exact locations of listings using interactive Mapbox
+
+---
+
+## 🎨 Screenshots
+
+Coming soon! Add screenshots of:
+- Home page with featured listings
+- Listing detail page
+- User dashboard
+- Create/edit listing form
+- Review section
 
 ---
 
 
+## 📝 License
+
+This project is licensed under the ISC License - see the LICENSE file for details.
+
+---
+
+## 📧 Contact
+
+For questions or support, please reach out to the project maintainer or open an issue on GitHub.
+
+---
+
+**Happy Travels! 🚀✈️🏖️**
